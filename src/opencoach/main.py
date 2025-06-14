@@ -21,6 +21,7 @@ from langsmith import traceable
 from langsmith.wrappers import wrap_anthropic
 import anthropic
 from langchain_anthropic import ChatAnthropic
+from uuid import uuid4
 
 def get_time() -> datetime.datetime:
     """Get the current time."""
@@ -105,7 +106,7 @@ async def amain():
     )
 
     # Run the agent
-    config = RunnableConfig(configurable={"thread_id": "1"})
+    config = RunnableConfig(configurable={"thread_id": str(uuid4())})
 
 
     while True:
