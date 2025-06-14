@@ -1,0 +1,24 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="#2563eb" stroke="none"/>
+  
+  <!-- Growth/progress arrow at top -->
+  <path d="M50 25 L50 15 M45 20 L50 15 L55 20" stroke="#10b981" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Open book/door symbol representing "open" -->
+  <path d="M20 40 L20 75 L30 70 L30 35 Z" fill="#ffffff" opacity="0.9"/>
+  <path d="M80 40 L80 75 L70 70 L70 35 Z" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Central coaching symbol - person -->
+  <circle cx="50" cy="45" r="7" fill="#fbbf24"/>
+  <rect x="45" y="53" width="10" height="18" rx="5" fill="#fbbf24"/>
+  
+  <!-- Connection dots representing community/network -->
+  <circle cx="35" cy="82" r="3" fill="#ffffff" opacity="0.8"/>
+  <circle cx="50" cy="85" r="3" fill="#ffffff" opacity="0.8"/>
+  <circle cx="65" cy="82" r="3" fill="#ffffff" opacity="0.8"/>
+  
+  <!-- Connection lines -->
+  <line x1="38" y1="82" x2="47" y2="85" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="53" y1="85" x2="62" y2="82" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+</svg>

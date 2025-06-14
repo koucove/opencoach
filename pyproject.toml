@@ -11,10 +11,13 @@ dependencies = [
     "langgraph>=0.4.8",
     "langmem>=0.0.1rc9",
     "openevals>=0.1.0",
+    "websockets>=15.0.1",
 ]
 
 [project.scripts]
-opencoach = "opencoach.main:main_cli"
+opencoach = "opencoach.coach:main_cli"
+opencoach_backend = "opencoach.websockets:main_cli"
+
 
 [build-system]
 requires = ["hatchling"]
