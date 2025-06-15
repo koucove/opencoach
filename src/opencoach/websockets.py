@@ -1,5 +1,5 @@
 import asyncio
-from websockets.asyncio.server import serve, ServerConnection
+from websockets.asyncio.server import serve, ServerConnection, Request
 from opencoach.coach import make_coach
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
@@ -7,6 +7,8 @@ from uuid import uuid4
 import dotenv
 from pydantic import BaseModel, Field
 from enum import Enum
+import signal
+import http
 
 
 class MessageType(str, Enum):
@@ -19,7 +21,7 @@ class Message(BaseModel):
     data: str = Field(description="Content of the message")
 
 
-async def echo(websocket: ServerConnection):
+async def session(websocket: ServerConnection):
     coach: CompiledGraph = await make_coach()
     config = RunnableConfig(configurable={"thread_id": str(uuid4())})
 
@@ -38,10 +40,20 @@ async def echo(websocket: ServerConnection):
                 if isinstance(chunk, str):
                     await websocket.send(Message(type=MessageType.Memory, data=chunk).json())
 
+
+def health_check(connection: ServerConnection, request: Request):
+    if request.path == "/healthz":
+        return connection.respond(http.HTTPStatus.OK, "OK\n")
+
+
+
 async def amain():
     dotenv.load_dotenv()
-    async with serve(echo, "localhost", 8765) as server:
-        await server.serve_forever()
+    async with serve(session, '0.0.0.0', 8765, process_request=health_check) as server:
+        loop = asyncio.get_running_loop()
+        loop.add_signal_handler(signal.SIGTERM, server.close)
+        await server.wait_closed()
+
 
 def main_cli():
     asyncio.run(amain())
