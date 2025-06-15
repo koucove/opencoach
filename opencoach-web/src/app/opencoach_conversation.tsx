@@ -19,7 +19,12 @@ export const OpenCoachConversation = () => {
     const [messageHistory, setMessageHistory] =
         useState<Message[]>([]);
 
-    const { sendMessage, lastJsonMessage, readyState } = useWebSocket(socketUrl);
+    const { sendMessage, lastJsonMessage, readyState } = useWebSocket(socketUrl, {
+        shouldReconnect: (closeEvent) => true,
+        reconnectAttempts: 10,
+        //attemptNumber will be 0 the first time it attempts to reconnect, so this equation results in a reconnect pattern of 1 second, 2 seconds, 4 seconds, 8 seconds, and then caps at 10 seconds until the maximum number of attempts is reached
+        reconnectInterval: (lastAttemptNumber: number) => Math.min(Math.pow(2, lastAttemptNumber) * 1000, 10000),
+    });
 
     useEffect(() => {
         if (lastJsonMessage !== null) {
@@ -37,10 +42,11 @@ export const OpenCoachConversation = () => {
 
         const humanInput = formData.get('humanInput') as string;
         // Send the message if humanInput is not empty
-        if (humanInput)
+        if (humanInput) {
             sendMessage(humanInput);
             form.reset(); // Clear the input field after sending
-        return false; // Prevent default form submission behavior
+            return false; // Prevent default form submission behavior
+        }
     }
 
     const connectionStatus = {
@@ -54,7 +60,6 @@ export const OpenCoachConversation = () => {
     return (
         <div>
             <span>The WebSocket is currently {connectionStatus}</span>
-            {lastJsonMessage ? <span>Last message: {lastJsonMessage.data}</span> : null}
             <h3>Coach memory</h3>
             <div>
                 {messageHistory.map((message, idx) => (

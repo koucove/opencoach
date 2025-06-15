@@ -34,7 +34,7 @@ async def echo(websocket: ServerConnection):
                                                     stream_mode="messages"):
             for chunk in message_chunk.content:
                 if isinstance(chunk, dict) and (text := chunk.get("text", "")):
-                    await websocket.send(Message(type=MessageType.Text, data=text).json())  # Send each chunk to the client
+                    await websocket.send(Message(type=MessageType.Text, data=text).json())
                 if isinstance(chunk, str):
                     await websocket.send(Message(type=MessageType.Memory, data=chunk).json())
 
