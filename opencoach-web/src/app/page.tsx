@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { OpenCoachConversation } from "./opencoach_conversation";
 import Head from "next/head";
+import { OpenCoachStatus } from "./opencoach_status";
+import { OpenCoachProvider } from "./opencoach_context";
 
 export default function Home() {
   return (
@@ -24,6 +26,12 @@ export default function Home() {
       <main className="flex flex-col justify-start">
         <div><OpenCoachConversation /></div>
       </main>
+      <div>
+        <h3>Coach status</h3>
+        <div>
+            <OpenCoachStatus />
+        </div>
+      </div>
       <footer>
       </footer>
     </div>

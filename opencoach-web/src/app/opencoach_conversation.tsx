@@ -1,7 +1,8 @@
 'use client'
 
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
+import { OpenCoachContext } from './opencoach_context';
 
 enum MessageType {
     Text = 'text',
@@ -14,23 +15,7 @@ interface Message {
 }
 
 export const OpenCoachConversation = () => {
-    const socketUrl = 'ws://localhost:8765'
-
-    const [messageHistory, setMessageHistory] =
-        useState<Message[]>([]);
-
-    const { sendMessage, lastJsonMessage, readyState } = useWebSocket(socketUrl, {
-        shouldReconnect: (closeEvent) => true,
-        reconnectAttempts: 10,
-        //attemptNumber will be 0 the first time it attempts to reconnect, so this equation results in a reconnect pattern of 1 second, 2 seconds, 4 seconds, 8 seconds, and then caps at 10 seconds until the maximum number of attempts is reached
-        reconnectInterval: (lastAttemptNumber: number) => Math.min(Math.pow(2, lastAttemptNumber) * 1000, 10000),
-    });
-
-    useEffect(() => {
-        if (lastJsonMessage !== null) {
-            setMessageHistory((prev) => prev.concat(lastJsonMessage));
-        }
-    }, [lastJsonMessage]);
+    const { sendMessage, lastJsonMessage, messageHistory, connectionStatus } = useContext(OpenCoachContext)
 
     function handleSubmit(e: any) {
         // Prevent the browser from reloading the page
@@ -49,23 +34,9 @@ export const OpenCoachConversation = () => {
         }
     }
 
-    const connectionStatus = {
-        [ReadyState.CONNECTING]: 'Connecting',
-        [ReadyState.OPEN]: 'Open',
-        [ReadyState.CLOSING]: 'Closing',
-        [ReadyState.CLOSED]: 'Closed',
-        [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    }[readyState];
-
     return (
-        <div>
+        <section>
             <span>The WebSocket is currently {connectionStatus}</span>
-            <h3>Coach memory</h3>
-            <div>
-                {messageHistory.map((message, idx) => (
-                    <span key={idx}>{message.type === MessageType.Memory ? message.data : ""}</span>
-                ))}
-            </div>
             <h3>Conversation</h3>
             <div>
                 {messageHistory.map((message, idx) => (
@@ -82,6 +53,6 @@ export const OpenCoachConversation = () => {
                     Send
                 </button>
             </form>
-        </div>
+        </section>
     );
 };
