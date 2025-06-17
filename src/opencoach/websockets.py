@@ -49,7 +49,7 @@ def health_check(connection: ServerConnection, request: Request):
 
 async def amain():
     dotenv.load_dotenv()
-    async with serve(session, '0.0.0.0', 8765, process_request=health_check) as server:
+    async with serve(session, '', 80, process_request=health_check) as server:
         loop = asyncio.get_running_loop()
         loop.add_signal_handler(signal.SIGTERM, server.close)
         await server.wait_closed()
