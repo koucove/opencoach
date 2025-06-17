@@ -3,6 +3,7 @@ FROM python:3.12-alpine
 
 COPY . .
 
-RUN --mount=type=cache,target=/root/.cache/pip pip install .
+ENV PIP_NO_CACHE_DIR=1
+RUN pip install .
 
 CMD [ "opencoach_backend" ]
